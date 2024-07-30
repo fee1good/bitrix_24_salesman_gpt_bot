@@ -1,2 +1,11 @@
-[MESSAGES CONTROL]
 disable=logging-fstring-interpolation
+
+[MESSAGE CONTROL]
+disable=line-too-long,
+        trailing-whitespace,
+        missing-module-docstring,
+        invalid-envvar-default,
+        missing-function-docstring,
+        unused-argument,
+        broad-exception-caught,
+        undefined-variable
