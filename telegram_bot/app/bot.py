@@ -57,7 +57,9 @@ async def is_enough_balance_for_image(user_id: int) -> (bool, float):
     """
     conn = await db_connect()
     try:
-        current_balance = await conn.fetchval("SELECT balance FROM user_balances WHERE user_id = $1", user_id)
+        current_balance = await conn.fetchval(
+            "SELECT balance FROM user_balances WHERE user_id = $1", 
+            user_id)
         if current_balance is None:  # This means the user does not exist in the user_balances table
             return False, 0.0
         return current_balance >= IMAGE_PRICE, current_balance
@@ -104,7 +106,8 @@ async def generate_image(update: Update, context: ContextTypes.DEFAULT_TYPE) -> 
 
     if not context.args:
         logger.error(f"User {user.id} ({user.username}) did not provide a prompt for the /image command.")
-        await update.message.reply_text("Please provide a description for the image after the /image command.",
+        await update.message.reply_text(
+            "Please provide a description for the image after the /image command.",
                                         reply_to_message_id=update.message.message_id)
         return
 
@@ -112,7 +115,8 @@ async def generate_image(update: Update, context: ContextTypes.DEFAULT_TYPE) -> 
     logger.info(f"User {user.id} ({user.username}) requested an image with prompt: '{prompt}'")
 
     if not await is_user_allowed(user.id):
-        logger.info("User %s (%s) tried to generate an image but is not allowed.", user.id, user.username)
+        logger.info("User %s (%s) tried to generate an image but is not allowed.", 
+        user.id, user.username)
         await update.message.reply_text("Sorry, you are not allowed to generate images.",
                                         reply_to_message_id=update.message.message_id)
         return
@@ -121,12 +125,13 @@ async def generate_image(update: Update, context: ContextTypes.DEFAULT_TYPE) -> 
     if not has_enough_balance:
         logger.error(f"User {user.id} ({user.username}) does not have enough balance to generate an image.")
         await update.message.reply_text(
-            f"Sorry, your current balance ({current_balance}₪) is not enough to generate an image. Price per image is {IMAGE_PRICE}₪.")
+            f"Sorry, your current balance ({current_balance}₪). Price per image is {IMAGE_PRICE}₪.")
         return
 
     async def keep_upload_photo():
         while keep_upload_photo.is_upload_photo:
-            await context.bot.send_chat_action(chat_id=update.effective_chat.id, action='upload_photo')
+            await context.bot.send_chat_action(chat_id=update.effective_chat.id, 
+            action='upload_photo')
             await asyncio.sleep(1)
 
     keep_upload_photo.is_upload_photo = True
