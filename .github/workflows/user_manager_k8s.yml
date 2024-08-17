@@ -51,19 +51,20 @@ jobs:
 
       - name: Build image
         working-directory: user_manager
-        run: docker build . --file Dockerfile --tag $PROJECT_NAME
+        run: docker build . --file Dockerfile --tag test
 
       - name: Log in to registry
         run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
 
       - name: Push image
         run: |
-          IMAGE_ID=ghcr.io/${{ github.repository_owner }}/${{ env.PROJECT_NAME }}-user_manager
+          IMAGE_ID=ghcr.io/${{ github.repository_owner }}/test-user_manager
           IMAGE_ID=$(echo $IMAGE_ID | tr '[A-Z]' '[a-z]')
-          VERSION=$(echo "${{ github.ref }}" | sed -e 's,.*/\(.*\),\1,' | sed 's/merge//')
+          VERSION=$(echo "${{ github.ref }}" | sed -e 's,.*/\(.*\),\1,')
+          echo "------------ ${{ github.ref }}"
           [ "$VERSION" == "main" ] && VERSION=latest
           echo IMAGE_ID=$IMAGE_ID
           echo VERSION=$VERSION
 
-          docker tag $PROJECT_NAME $IMAGE_ID:$VERSION
+          docker tag test $IMAGE_ID:$VERSION
           docker push $IMAGE_ID:$VERSION
