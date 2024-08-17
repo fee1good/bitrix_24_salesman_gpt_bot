@@ -1,4 +1,4 @@
-name: Telegram Bot CI
+name: User Manager CI
 
 on:
   workflow_dispatch:
@@ -8,7 +8,7 @@ on:
       - reopened
       - synchronize
     paths:
-      - 'telegram_bot/**'
+      - 'user_manager/**'
 
 env:
   PROJECT_NAME: bitrix_24_salesman_gpt
@@ -32,12 +32,12 @@ jobs:
       - name: Install dependencies
         run: |
           pip install -r requirements.txt
-        working-directory: ./telegram_bot/app
+        working-directory: ./user_manager
 
       - name: Analysing the code with pylint
         run: |
-          pylint bot.py
-        working-directory: ./telegram_bot/app
+          pylint manager.py
+        working-directory: ./user_manager
 
   build_and_push:
 #    needs:
@@ -46,16 +46,11 @@ jobs:
       contents: read
       packages: write
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        dir:
-          - telegram_bot
-          - liquibase
     steps:
       - uses: actions/checkout@v4
 
       - name: Build image
-        working-directory: ${{ matrix.dir }}
+        working-directory: user_manager
         run: docker build . --file Dockerfile --tag $PROJECT_NAME
 
       - name: Log in to registry
@@ -63,7 +58,7 @@ jobs:
 
       - name: Push image
         run: |
-          IMAGE_ID=ghcr.io/${{ github.repository_owner }}/${{ env.PROJECT_NAME }}-${{ matrix.dir }}
+          IMAGE_ID=ghcr.io/${{ github.repository_owner }}/${{ env.PROJECT_NAME }}-user_manager
           IMAGE_ID=$(echo $IMAGE_ID | tr '[A-Z]' '[a-z]')
           VERSION=$(echo "${{ github.ref }}" | sed -e 's,.*/\(.*\),\1,')
           [ "$VERSION" == "main" ] && VERSION=latest
