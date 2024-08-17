@@ -63,12 +63,12 @@ jobs:
 
       - name: Push image
         run: |
-          IMAGE_ID=ghcr.io/${{ github.repository_owner }}/${{ env.PROJECT_NAME }}-${{ matrix.dir }}
+          IMAGE_ID=ghcr.io/${{ github.repository_owner }}/test-${{ matrix.dir }}
           IMAGE_ID=$(echo $IMAGE_ID | tr '[A-Z]' '[a-z]')
           VERSION=$(echo "${{ github.ref }}" | sed -e 's,.*/\(.*\),\1,')
           [ "$VERSION" == "main" ] && VERSION=latest
           echo IMAGE_ID=$IMAGE_ID
           echo VERSION=$VERSION
 
-          docker tag $PROJECT_NAME $IMAGE_ID:$VERSION
+          docker tag test $IMAGE_ID:$VERSION
           docker push $IMAGE_ID:$VERSION
