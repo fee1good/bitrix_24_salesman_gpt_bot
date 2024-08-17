@@ -56,7 +56,7 @@ jobs:
 
       - name: Build image
         working-directory: ${{ matrix.dir }}
-        run: docker build . --file Dockerfile --tag $PROJECT_NAME
+        run: docker build . --file Dockerfile --tag test
 
       - name: Log in to registry
         run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
