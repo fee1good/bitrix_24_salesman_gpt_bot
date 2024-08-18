@@ -40,8 +40,9 @@ jobs:
         working-directory: ./telegram_bot/app
 
   build_and_push:
-#    needs:
-#      - pylint
+    outputs:
+      new_tag_liquibase: ${{ steps.push_image.outputs.new_tag_liquibase }}
+      new_tag_telegram_bot: ${{ steps.push_image.outputs.new_tag_telegram_bot }}
     permissions:
       contents: read
       packages: write
@@ -64,11 +65,42 @@ jobs:
       - name: Push image
         run: |
           IMAGE_ID=ghcr.io/${{ github.repository_owner }}/${{ env.PROJECT_NAME }}-${{ matrix.dir }}
-          IMAGE_ID=$(echo $IMAGE_ID | tr '[A-Z]' '[a-z]')
-          VERSION=$(echo "${{ github.ref }}" | sed -e 's,.*/\(.*\),\1,')
-          [ "$VERSION" == "main" ] && VERSION=latest
-          echo IMAGE_ID=$IMAGE_ID
-          echo VERSION=$VERSION
+          CURRENT_BRANCH=${{ github.head_ref || github.ref_name }} 
+          if [ "$CURRENT_BRANCH" == "main" ]; then
+            TAG=latest
+          else
+            TAG="$CURRENT_BRANCH"
+          fi
+          docker tag $PROJECT_NAME $IMAGE_ID:$TAG
+          docker push $IMAGE_ID:$TAG
+          echo "new_tag_${{ matrix.dir }}=$TAG" >> $GITHUB_OUTPUT
+        id: push_image
+  
+  deploy:
+    runs-on: ubuntu-latest
+    needs:
+      - build_and_push
+    steps:
+      - uses: actions/checkout@v4
 
-          docker tag $PROJECT_NAME $IMAGE_ID:$VERSION
-          docker push $IMAGE_ID:$VERSION
+      - name: EKS login
+        run: |
+          aws eks \
+          --region ${{ vars.AWS_REGION }} \
+          update-kubeconfig \
+          --name ${{ vars.EKS_NAME }}
+
+      - uses: azure/setup-helm@v4.2.0
+
+      - name: helm upgrade --install
+        run: |
+          helm \
+          upgrade --install \
+          --namespace ${{ vars.KUBE_NS }} \
+          --create-namespace \
+          telegram-bot \
+          --set image_bot.tag=${{ needs.build_and_push.outputs.new_tag_telegram_bot }} \
+          --set image_liquibase.tag=${{ needs.build_and_push.outputs.new_tag_liquibase }} \
+          --wait \
+          ./telegram-bot
+        working-directory: ./charts
