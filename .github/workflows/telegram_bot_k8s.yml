@@ -104,5 +104,5 @@ jobs:
           --set image_bot.tag=${{ needs.build_and_push.outputs.new_tag_telegram_bot }} \
           --set image_liquibase.tag=${{ needs.build_and_push.outputs.new_tag_liquibase }} \
           --wait \
-          ./telegram-bot
+          ./tg-bot
         working-directory: ./charts
