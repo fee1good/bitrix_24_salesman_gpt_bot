@@ -157,4 +157,3 @@ def set_balance():
 
 if __name__ == '__main__':
     app.run(debug=True)
-

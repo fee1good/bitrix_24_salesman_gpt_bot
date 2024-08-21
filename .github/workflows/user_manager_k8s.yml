@@ -95,7 +95,7 @@ jobs:
           upgrade --install \
           --namespace ${{ vars.KUBE_NS }} \
           --create-namespace \
-          telegram-bot \
+          user-manager \
           --set image_bot.tag=${{ needs.build_and_push.outputs.new_tag_user_manager }} \
           --wait \
           ./user-manager
