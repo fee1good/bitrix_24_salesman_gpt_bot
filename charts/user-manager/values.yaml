@@ -1,0 +1,13 @@
+replicaCount: 1
+
+image_user_manager:
+  pullPolicy: Always
+  repository: ghcr.io/fee1good/bitrix_24_salesman_gpt-user_manager
+  # Overrides the image tag whose default is the chart appVersion.
+  tag: ""
+
+secret:
+  name: app-secrets
+
+container:
+  port: 5000
