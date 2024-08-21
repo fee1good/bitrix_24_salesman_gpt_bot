@@ -1,4 +1,4 @@
-name: Telegram Bot CI
+name: User Manager Bot CI
 
 on:
   workflow_dispatch:
@@ -9,6 +9,7 @@ on:
       - synchronize
     paths:
       - 'user_manager/**'
+      - '.github/workflows/user_manager_k8s.yml'
 
 env:
   PROJECT_NAME: bitrix_24_salesman_gpt
@@ -38,7 +39,7 @@ jobs:
 
       - name: Analysing the code with pylint
         run: |
-          pylint bot.py
+          pylint manager.py
         working-directory: ./user_manager/app
 
   build_and_push:
@@ -96,7 +97,7 @@ jobs:
           --namespace ${{ vars.KUBE_NS }} \
           --create-namespace \
           user-manager \
-          --set image_bot.tag=${{ needs.build_and_push.outputs.new_tag_user_manager }} \
+          --set image_user_manager.tag=${{ needs.build_and_push.outputs.new_tag_user_manager }} \
           --wait \
           ./user-manager
         working-directory: ./charts
