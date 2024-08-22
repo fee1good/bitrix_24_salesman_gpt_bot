@@ -9,6 +9,7 @@ on:
       - synchronize
     paths:
       - 'telegram_bot/**'
+      - '.github/workflows/telegram_bot_k8s.yml'
 
 env:
   PROJECT_NAME: bitrix_24_salesman_gpt
@@ -66,7 +67,7 @@ jobs:
 
       - name: Push image
         run: |
-          IMAGE_ID=ghcr.io/${{ github.repository_owner }}/${{ env.PROJECT_NAME }}-${{ matrix.dir }}
+          IMAGE_ID=ghcr.io/${{ github.repository_owner }}/${{ env.PROJECT_NAME }}_${{ matrix.dir }}
           CURRENT_BRANCH=${{ github.head_ref || github.ref_name }} 
           if [ "$CURRENT_BRANCH" == "main" ]; then
             TAG=latest
@@ -99,7 +100,6 @@ jobs:
           helm \
           upgrade --install \
           --namespace ${{ vars.KUBE_NS }} \
-          --create-namespace \
           telegram-bot \
           --set image_bot.tag=${{ needs.build_and_push.outputs.new_tag_telegram_bot }} \
           --set image_liquibase.tag=${{ needs.build_and_push.outputs.new_tag_liquibase }} \

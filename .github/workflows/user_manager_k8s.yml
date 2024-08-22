@@ -62,7 +62,7 @@ jobs:
 
       - name: Push image
         run: |
-          IMAGE_ID=ghcr.io/${{ github.repository_owner }}/${{ env.PROJECT_NAME }}-user-manager
+          IMAGE_ID=ghcr.io/${{ github.repository_owner }}/${{ env.PROJECT_NAME }}_user-manager
           CURRENT_BRANCH=${{ github.head_ref || github.ref_name }} 
           if [ "$CURRENT_BRANCH" == "main" ]; then
             TAG=latest
@@ -95,7 +95,6 @@ jobs:
           helm \
           upgrade --install \
           --namespace ${{ vars.KUBE_NS }} \
-          --create-namespace \
           user-manager \
           --set image_user_manager.tag=${{ needs.build_and_push.outputs.new_tag_user_manager }} \
           --wait \
