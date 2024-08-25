@@ -17,12 +17,10 @@ formatter = Logfmter(
 
 stream_handler = logging.StreamHandler()
 stream_handler.setFormatter(formatter)
-file_handler = logging.FileHandler("./logs/manager.log")
-file_handler.setFormatter(formatter)
 
 logging.basicConfig(
     level=logging.INFO,
-    handlers=[stream_handler, file_handler]
+    handlers=[stream_handler]
 )
 
 # Set a higher logging level for httpx to avoid all GET and POST requests being logged
@@ -159,3 +157,4 @@ def set_balance():
 
 if __name__ == '__main__':
     app.run(debug=True)
+
