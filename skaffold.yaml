@@ -1,0 +1,22 @@
+apiVersion: skaffold/v4beta10
+kind: Config
+metadata:
+  name: bitrix-24-salesman-gpt-bot
+build:
+  artifacts:
+  - image: bitrix_24_salesman_gpt_liquibase
+    context: liquibase
+  - image: bitrix_24_salesman_gpt_telegram_bot
+    context: telegram_bot
+deploy:
+  kubeContext: arn:aws:eks:eu-central-1:632497825040:cluster/iac-001-study-cluster
+  helm:
+    releases:
+    - name: telegram-bot
+      namespace: vitya-dev
+      chartPath: charts/tg-bot
+      setValueTemplates:
+        image_liquibase.repository: "{{.IMAGE_REPO_bitrix_24_salesman_gpt_liquibase}}"
+        image_liquibase.tag: "{{.IMAGE_TAG_bitrix_24_salesman_gpt_liquibase}}@{{.IMAGE_DIGEST_bitrix_24_salesman_gpt_liquibase}}"
+        image_bot.repository: "{{.IMAGE_REPO_bitrix_24_salesman_gpt_telegram_bot}}"
+        image_bot.tag: "{{.IMAGE_TAG_bitrix_24_salesman_gpt_telegram_bot}}@{{.IMAGE_DIGEST_bitrix_24_salesman_gpt_telegram_bot}}"
