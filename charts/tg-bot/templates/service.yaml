@@ -3,7 +3,7 @@ kind: Service
 metadata:
   name: {{ include "telegram-bot.fullname" . }}
   labels:
-    {{- include "telegram-botr.labels" . | nindent 4 }}
+    {{- include "telegram-bot.labels" . | nindent 4 }}
 spec:
   type: ClusterIP
   ports:
