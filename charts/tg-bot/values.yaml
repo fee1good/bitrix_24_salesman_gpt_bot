@@ -14,3 +14,13 @@ image_liquibase:
 
 secret:
   name: app-secrets
+
+webhook:
+  port: 8443
+
+service:
+  port: 8443
+
+ingress:
+  host: webhook-victor.danilevich-it-school.com
+  cluster_issuer: cert-manager
