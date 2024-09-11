@@ -2,12 +2,12 @@ replicaCount: 1
 
 image_bot:
   pullPolicy: Always
-  repository: ghcr.io/fee1good/bitrix_24_salesman_gpt-telegram_bot
+  repository: ghcr.io/fee1good/bitrix_24_salesman_gpt_telegram_bot
   # Overrides the image tag whose default is the chart appVersion.
   tag: ""
 
 image_liquibase:
-  repository: ghcr.io/fee1good/bitrix_24_salesman_gpt-liquibase
+  repository: ghcr.io/fee1good/bitrix_24_salesman_gpt_liquibase
   pullPolicy: Always
   # Overrides the image tag whose default is the chart appVersion.
   tag: ""

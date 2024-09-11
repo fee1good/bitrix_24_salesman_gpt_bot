@@ -2,7 +2,7 @@ replicaCount: 1
 commitHash: ""
 
 image_user_manager:
-  repository: ghcr.io/fee1good/bitrix_24_salesman_gpt-user_manager
+  repository: ghcr.io/fee1good/bitrix_24_salesman_gpt_user_manager
   pullPolicy: Always
   # Overrides the image tag whose default is the chart appVersion.
   tag: "merge"
