@@ -22,5 +22,6 @@ service:
   port: 8443
 
 ingress:
+  enabled: true
   host: webhook-victor.danilevich-it-school.com
   cluster_issuer: cert-manager
