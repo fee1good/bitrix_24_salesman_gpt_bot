@@ -97,6 +97,7 @@ jobs:
           --namespace ${{ vars.KUBE_NS }} \
           user-manager \
           --set image_user_manager.tag=${{ needs.build_and_push.outputs.new_tag_user_manager }} \
+          --set ingress.basic_auth=${{ secrets.BASIC_AUTH_CREDS }}
           --wait \
           ./user-manager
         working-directory: ./charts

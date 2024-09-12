@@ -22,3 +22,4 @@ ingress:
   enabled: true
   host: victor.danilevich-it-school.com
   cluster_issuer: cert-manager
+  basic_auth: ""
