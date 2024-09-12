@@ -16,8 +16,7 @@ spec:
     spec:
       containers:
         - name: user-manager
-          # image: "{{ .Values.image_user_manager.repository }}:{{ .Values.image_user_manager.tag | default .Chart.AppVersion }}"
-          image: "{{ .Values.image_user_manager.repository }}:{{ .Values.image_user_manager.tag }}"
+          image: "{{ .Values.image_user_manager.repository }}:{{ .Values.image_user_manager.tag | default .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.image_user_manager.pullPolicy }}
           ports:
             - containerPort: {{ .Values.container.port }}
