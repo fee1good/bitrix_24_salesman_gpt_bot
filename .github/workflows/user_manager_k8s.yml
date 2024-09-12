@@ -62,7 +62,7 @@ jobs:
 
       - name: Push image
         run: |
-          IMAGE_ID=ghcr.io/${{ github.repository_owner }}/${{ env.PROJECT_NAME }}_user-manager
+          IMAGE_ID=ghcr.io/${{ github.repository_owner }}/${{ env.PROJECT_NAME }}_user_manager
           CURRENT_BRANCH=${{ github.head_ref || github.ref_name }} 
           if [ "$CURRENT_BRANCH" == "main" ]; then
             TAG=latest
