@@ -2,12 +2,12 @@ replicaCount: 1
 
 image_bot:
   pullPolicy: Always
-  repository: ghcr.io/fee1good/bitrix_24_salesman_gpt-telegram_bot
+  repository: ghcr.io/fee1good/bitrix_24_salesman_gpt_telegram_bot
   # Overrides the image tag whose default is the chart appVersion.
   tag: ""
 
 image_liquibase:
-  repository: ghcr.io/fee1good/bitrix_24_salesman_gpt-liquibase
+  repository: ghcr.io/fee1good/bitrix_24_salesman_gpt_liquibase
   pullPolicy: Always
   # Overrides the image tag whose default is the chart appVersion.
   tag: ""
@@ -18,3 +18,14 @@ serviceAccount:
 
 secret:
   name: app-secrets
+
+webhook:
+  port: 8443
+
+service:
+  port: 8443
+
+ingress:
+  enabled: true
+  host: webhook-victor.danilevich-it-school.com
+  cluster_issuer: cert-manager

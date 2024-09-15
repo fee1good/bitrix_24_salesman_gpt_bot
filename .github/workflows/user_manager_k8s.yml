@@ -62,7 +62,7 @@ jobs:
 
       - name: Push image
         run: |
-          IMAGE_ID=ghcr.io/${{ github.repository_owner }}/${{ env.PROJECT_NAME }}_user-manager
+          IMAGE_ID=ghcr.io/${{ github.repository_owner }}/${{ env.PROJECT_NAME }}_user_manager
           CURRENT_BRANCH=${{ github.head_ref || github.ref_name }} 
           if [ "$CURRENT_BRANCH" == "main" ]; then
             TAG=latest
@@ -97,6 +97,7 @@ jobs:
           --namespace ${{ vars.KUBE_NS }} \
           user-manager \
           --set image_user_manager.tag=${{ needs.build_and_push.outputs.new_tag_user_manager }} \
+          --set ingress.basic_auth=${{ secrets.BASIC_AUTH_CREDS }} \
           --wait \
           ./user-manager
         working-directory: ./charts

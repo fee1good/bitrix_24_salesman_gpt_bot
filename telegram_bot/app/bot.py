@@ -273,9 +273,14 @@ def main() -> None:
     application.add_handler(CommandHandler("image", generate_image))
     application.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, gpt_prompt))
 
-    # Run the bot until the user presses Ctrl-C
-    application.run_polling(allowed_updates=Update.ALL_TYPES)
-
+    logger.info("Starting webhook mode.")
+    application.run_webhook(
+        listen="0.0.0.0",
+        port=int(os.getenv("WEBHOOK_PORT", "8443")),
+        secret_token=os.getenv("WEB_HOOK_SECRET_TOKEN"),
+        allowed_updates=Update.ALL_TYPES,
+        webhook_url=os.getenv("WEBHOOK_URL"),
+    )
 
 if __name__ == "__main__":
     main()

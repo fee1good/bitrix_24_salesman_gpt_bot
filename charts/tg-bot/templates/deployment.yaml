@@ -49,6 +49,9 @@ spec:
         - name: telegram-bot
           image: "{{ .Values.image_bot.repository }}:{{ .Values.image_bot.tag | default .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.image_bot.pullPolicy }}
+          ports:
+            - containerPort: {{ .Values.webhook.port }}
+              name: webhook-port
           env:
             - name: POSTGRES_USER
               valueFrom:
@@ -90,3 +93,10 @@ spec:
                 secretKeyRef:
                   name: {{ .Values.secret.name }}
                   key: IMAGE_PRICE
+            - name: WEB_HOOK_SECRET_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.secret.name }}
+                  key: WEB_HOOK_SECRET_TOKEN
+            - name: WEBHOOK_URL
+              value: {{ .Values.ingress.host }}
