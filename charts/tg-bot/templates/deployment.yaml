@@ -15,6 +15,13 @@ spec:
         {{- include "telegram-bot.selectorLabels" . | nindent 8 }}
     spec:
       serviceAccountName: {{ .Values.serviceAccount.name }}
+      volumes:
+        - name: secrets-store
+          csi:
+            driver: secrets-store.csi.k8s.io
+            readOnly: true
+            volumeAttributes:
+              secretProviderClass: "secret-provider-class"
       initContainers:
         - name: liquibase
           image: "{{ .Values.image_liquibase.repository }}:{{ .Values.image_liquibase.tag | default .Chart.AppVersion }}"
@@ -52,52 +59,16 @@ spec:
           ports:
             - containerPort: {{ .Values.webhook.port }}
               name: webhook-port
+          volumeMounts:
+            - name: secrets-store
+              mountPath: "/mnt/secrets-store"
+              readOnly: true
+          envFrom:
+            - secretRef:
+                name: {{ .Values.secret.name }}
+            - secretRef:
+                name: {{ .Values.secret.extra_name }}
           env:
-            - name: POSTGRES_USER
-              valueFrom:
-                secretKeyRef:
-                  name: {{ .Values.secret.name }}
-                  key: POSTGRES_USER
-            - name: POSTGRES_PASSWORD
-              valueFrom:
-                secretKeyRef:
-                  name: {{ .Values.secret.name }}
-                  key: POSTGRES_PASSWORD
-            - name: POSTGRES_PORT
-              valueFrom:
-                secretKeyRef:
-                  name: {{ .Values.secret.name }}
-                  key: POSTGRES_PORT
-            - name: POSTGRES_DB
-              valueFrom:
-                secretKeyRef:
-                  name: {{ .Values.secret.name }}
-                  key: POSTGRES_DB
-            - name: DB_HOST
-              valueFrom:
-                secretKeyRef:
-                  name: {{ .Values.secret.name }}
-                  key: DB_HOST
-            - name: OPENAI_API_KEY
-              valueFrom:
-                secretKeyRef:
-                  name: {{ .Values.secret.name }}
-                  key: OPENAI_API_KEY
-            - name: TELEGRAM_BOT_TOKEN
-              valueFrom:
-                secretKeyRef:
-                  name: {{ .Values.secret.name }}
-                  key: TELEGRAM_BOT_TOKEN
-            - name: IMAGE_PRICE
-              valueFrom:
-                secretKeyRef:
-                  name: {{ .Values.secret.name }}
-                  key: IMAGE_PRICE
-            - name: WEB_HOOK_SECRET_TOKEN
-              valueFrom:
-                secretKeyRef:
-                  name: {{ .Values.secret.name }}
-                  key: WEB_HOOK_SECRET_TOKEN
             - name: WEBHOOK_URL
               value: {{ .Values.ingress.host }}
             - name: S3_IMAGES_UPLOAD_BUCKET

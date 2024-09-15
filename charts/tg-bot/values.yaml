@@ -18,6 +18,14 @@ serviceAccount:
 
 secret:
   name: app-secrets
+  extra_name: app-secrets-s3
+  useExisting: false
+  # if useExisting is false,
+  # then the following values are required
+  arn: "arn:aws:secretsmanager:eu-central-1:632497825040:secret:victor-app-bot-nXYvw3"
+  region: "eu-central-1"
+  keys:
+    - POSTGRES_PASSWORD
 
 webhook:
   port: 8443
