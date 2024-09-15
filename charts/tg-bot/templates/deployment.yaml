@@ -31,6 +31,17 @@ spec:
             "--url=jdbc:postgresql://$(DB_HOST):5432/$(POSTGRES_DB)",
             "update"
           ]
+          env:
+            - name: LIQUIBASE_COMMAND_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.secret.name }}
+                  key: POSTGRES_USER
+            - name: LIQUIBASE_COMMAND_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.secret.extra_name }}
+                  key: POSTGRES_PASSWORD
           envFrom:
             - secretRef:
                 name: {{ .Values.secret.name }}
