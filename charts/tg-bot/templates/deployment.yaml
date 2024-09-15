@@ -103,10 +103,10 @@ spec:
             - name: S3_IMAGES_UPLOAD_BUCKET
               valueFrom:
                 secretKeyRef:
-                  name: {{ .Values.secret.name }}
+                  name: {{ .Values.s3.bucket }}
                   key: S3_IMAGES_UPLOAD_BUCKET
             - name: S3_IMAGES_UPLOAD_DESTINATION
               valueFrom:
                 secretKeyRef:
-                  name: {{ .Values.secret.name }}
+                  name: {{ .Values.s3.destination }}
                   key: S3_IMAGES_UPLOAD_DESTINATION
