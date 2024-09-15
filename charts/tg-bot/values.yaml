@@ -12,5 +12,9 @@ image_liquibase:
   # Overrides the image tag whose default is the chart appVersion.
   tag: ""
 
+serviceAccount:
+  name: sa-telegram-bot
+  aws_role_arn: arn:aws:iam::632497825040:role/vitya-bot-role
+
 secret:
   name: app-secrets
