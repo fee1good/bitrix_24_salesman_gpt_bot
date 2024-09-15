@@ -1,0 +1,29 @@
+{{- if .Values.ingress.enabled }}
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: {{ include "telegram-bot.fullname" . }}
+  labels:
+    {{- include "telegram-bot.labels" . | nindent 4 }}
+  annotations:
+    # nginx.ingress.kubernetes.io/whitelist-source-range: "46.117.150.62/32"
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"
+    cert-manager.io/cluster-issuer: {{ .Values.ingress.cluster_issuer }}
+spec:
+  ingressClassName: nginx
+  rules:
+    - host: {{ .Values.ingress.host }}
+      http:
+        paths:
+          - path: "/"
+            pathType: Prefix
+            backend:
+              service:
+                name: {{ include "telegram-bot.fullname" . }}
+                port:
+                  name: webhook-port
+  tls:
+    - hosts:
+        - {{ .Values.ingress.host }}
+      secretName: {{ .Values.ingress.host }}-tls
+{{- end }}

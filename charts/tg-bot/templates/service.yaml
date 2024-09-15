@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "telegram-bot.fullname" . }}
+  labels:
+    {{- include "telegram-bot.labels" . | nindent 4 }}
+spec:
+  type: ClusterIP
+  ports:
+    - port: {{ .Values.service.port }}
+      targetPort: webhook-port
+      protocol: TCP
+      name: webhook-port
+  selector:
+    {{- include "telegram-bot.selectorLabels" . | nindent 6 }}

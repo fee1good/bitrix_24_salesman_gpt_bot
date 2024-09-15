@@ -1,13 +1,25 @@
 replicaCount: 1
+commitHash: ""
 
 image_user_manager:
+  repository: ghcr.io/fee1good/bitrix_24_salesman_gpt_user_manager
   pullPolicy: Always
-  repository: ghcr.io/fee1good/bitrix_24_salesman_gpt-user-manager
   # Overrides the image tag whose default is the chart appVersion.
   tag: ""
+
+container:
+  port: 5000
+
+service:
+  port: 5000
 
 secret:
   name: app-secrets
 
-container:
-  port: 5000
+flaskDebug: "0"
+
+ingress:
+  enabled: true
+  host: victor.danilevich-it-school.com
+  cluster_issuer: cert-manager
+  basic_auth: ""
