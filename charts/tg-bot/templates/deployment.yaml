@@ -101,12 +101,6 @@ spec:
             - name: WEBHOOK_URL
               value: {{ .Values.ingress.host }}
             - name: S3_IMAGES_UPLOAD_BUCKET
-              valueFrom:
-                secretKeyRef:
-                  name: {{ .Values.s3.bucket }}
-                  key: S3_IMAGES_UPLOAD_BUCKET
+              value: {{ .Values.s3.bucket }}
             - name: S3_IMAGES_UPLOAD_DESTINATION
-              valueFrom:
-                secretKeyRef:
-                  name: {{ .Values.s3.destination }}
-                  key: S3_IMAGES_UPLOAD_DESTINATION
+              value: {{ .Values.s3.destination }}
