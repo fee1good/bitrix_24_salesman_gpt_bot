@@ -104,3 +104,4 @@ spec:
               value: {{ .Values.s3.bucket }}
             - name: S3_IMAGES_UPLOAD_DESTINATION
               value: {{ .Values.s3.destination }}
+
