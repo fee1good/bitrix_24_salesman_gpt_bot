@@ -4,3 +4,4 @@ openai==1.35.3
 logfmter==0.0.8
 asyncpg==0.29.0
 telegramify-markdown==0.1.11
+boto3==1.35.15

@@ -12,8 +12,20 @@ image_liquibase:
   # Overrides the image tag whose default is the chart appVersion.
   tag: ""
 
+serviceAccount:
+  name: sa-telegram-bot
+  aws_role_arn: arn:aws:iam::632497825040:role/vitya-bot-role
+
 secret:
   name: app-secrets
+  extra_name: app-secrets-s3
+  useExisting: false
+  # if useExisting is false,
+  # then the following values are required
+  arn: "arn:aws:secretsmanager:eu-central-1:632497825040:secret:victor-app-bot-nXYvw3"
+  region: "eu-central-1"
+  keys:
+    - POSTGRES_PASSWORD
 
 webhook:
   port: 8443
@@ -25,3 +37,7 @@ ingress:
   enabled: true
   host: webhook-victor.danilevich-it-school.com
   cluster_issuer: cert-manager
+
+s3:
+  bucket: iac001-s3-bucket
+  destination: vitya-bot/images

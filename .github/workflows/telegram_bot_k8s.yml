@@ -8,6 +8,7 @@ on:
       - reopened
       - synchronize
     paths:
+      - charts/**
       - 'telegram_bot/**'
       - '.github/workflows/telegram_bot_k8s.yml'
 
