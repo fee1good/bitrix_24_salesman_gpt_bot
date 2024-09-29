@@ -41,3 +41,6 @@ ingress:
 s3:
   bucket: iac001-s3-bucket
   destination: vitya-bot/images
+
+metrics:
+  port: 8000

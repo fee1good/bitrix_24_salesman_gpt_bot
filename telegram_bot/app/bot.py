@@ -19,6 +19,9 @@ from telegramify_markdown import customize
 import boto3
 from botocore.exceptions import NoCredentialsError, PartialCredentialsError
 
+from prometheus_client import Counter
+from prometheus_client import start_http_server
+
 # Configure telegramify_markdown
 customize.markdown_symbol.head_level_1 = "📌"
 customize.markdown_symbol.link = "🔗"
@@ -67,7 +70,7 @@ S3_IMAGES_UPLOAD_BUCKET = os.getenv("S3_IMAGES_UPLOAD_BUCKET")
 S3_IMAGES_UPLOAD_DESTINATION = os.getenv("S3_IMAGES_UPLOAD_DESTINATION")
 
 
-async def upload_image_to_s3(image_data_base64: str, bucket_name: str, file_name: str) -> str:
+async def upload_image_to_s3(image_data_base64: str, bucket_name: str, file_name: str):
     """Upload image bytes (base64 encoded) to AWS S3 and return the URL of the uploaded image."""
     s3_client = boto3.client('s3')
     temp_file_path = f'/tmp/{file_name}'
@@ -174,6 +177,12 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     )
 
 
+generated_images_counter = Counter('generated_images',
+                                   'Number of generated images',
+                                   labelnames=['user_id', 'user_name', 'status']
+                                   )
+
+
 async def generate_image(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     """Generate an image based on a prompt and send it back to the user as an image."""
     await check_db_health()
@@ -256,6 +265,7 @@ async def generate_image(update: Update, context: ContextTypes.DEFAULT_TYPE) -> 
                 await upload_image_to_s3(image_data_base64,
                                          S3_IMAGES_UPLOAD_BUCKET,
                                          image_file_name)
+                generated_images_counter.labels(user_id=user.id, user_name=user.name, status="success").inc(1)
                 logger.info("Successfully sent and uploaded to S3 an image for prompt: '%s'", prompt)
             except Exception as e:
                 logger.error("Failed to upload image to S3 for user %s (%s): %s", user.id, user.username, e)
@@ -274,6 +284,7 @@ async def generate_image(update: Update, context: ContextTypes.DEFAULT_TYPE) -> 
         await typing_task
 
         logging.error("Error generating image for prompt: '%s': %s", prompt, e)
+        generated_images_counter.labels(user_id=user.id, user_name=user.name, status="error").inc(1)
         await update.message.reply_text(
             "Sorry, there was an error generating your image.",
             reply_to_message_id=update.message.message_id
@@ -400,7 +411,7 @@ def main() -> None:
         application.run_webhook(
             listen="0.0.0.0",
             port=int(os.getenv("WEBHOOK_PORT", "8443")),
-            secret_token=os.getenv("WEB_HOOK_SECRET_TOKEN"),
+            secret_token=os.getenv("WEBHOOK_SECRET_TOKEN"),
             allowed_updates=Update.ALL_TYPES,
             webhook_url=os.getenv("WEBHOOK_URL"),
         )
@@ -410,4 +421,5 @@ def main() -> None:
 
 
 if __name__ == "__main__":
+    start_http_server(int(os.getenv("METRICS_PORT", "8000")))
     main()
